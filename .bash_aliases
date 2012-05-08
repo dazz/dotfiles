@@ -1,6 +1,8 @@
 # specify the dir name of the project
 project_dir_name='playground'
 project_path='/var/www'
+own_user='vagrant'
+www_group='www-data'
 
 # the dummy access to the mysql
 alias mysql_vagrant='mysql --user=root -p<your-password>'
@@ -27,6 +29,9 @@ alias symfony-cw='sudo chmod -R 777 $project_path/$project_dir_name/app/cache'
 
 # make log files writable
 alias symfony-lw='sudo chmod -R 777 $project_path/$project_dir_name/app/logs'
+
+# make all the files owned by user vagrant and group www-data
+alias symfony-own="sudo chown -R $own_user:$www_group $project_path/$project_dir_name/*"
 
 
 # enable color support of ls and also add handy aliases
@@ -69,5 +74,3 @@ shopt -s histappend
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 #shopt -s checkwinsize
-
-
