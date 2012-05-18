@@ -7,6 +7,9 @@ www_group='www-data'
 # the dummy access to the mysql
 alias mysql_vagrant='mysql --user=root -p<your-password>'
 
+# composer-dev aliases
+alias get-composer='curl -s http://getcomposer.org/installer | php'
+
 # symfony-dev aliases
 alias composer='php composer.phar'
 alias symfony='php app/console'
@@ -26,6 +29,9 @@ alias symfony-build_bootstrap='./vendor/sensio/distribution-bundle/Sensio/Bundle
 
 # make cache writeable
 alias symfony-cw='sudo chmod -R 777 $project_path/$project_dir_name/app/cache'
+
+# delete cache and make dir writable
+alias symfony-cdw='symfony-cd;symfony-cw'
 
 # make log files writable
 alias symfony-lw='sudo chmod -R 777 $project_path/$project_dir_name/app/logs'
