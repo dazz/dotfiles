@@ -67,7 +67,7 @@ alias ..='cd ..'
 #    \W – Current working directory (ie: Desktop/)
 #    \w – Current working directory, full path (ie: /Users/Admin/Desktop)
 
-export PS1='\[\e[0;32;40m\][\#][\t][\w]\e[0m $ '
+export PS1='[\h]\[\e[0;32;40m\][\#][\t][\w]\e[0m $ '
 
 # don't put duplicate lines in the history. See bash(1) for more options
 # don't overwrite GNU Midnight Commander's setting of `ignorespace'.
