@@ -133,3 +133,38 @@ function parse_git_branch {
 }
 
 PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[01;32m\]$(parse_git_branch)\[\033[00m\]$ '
+
+function git_info() {
+
+    if [ -n "$(git symbolic-ref HEAD 2> /dev/null)" ]; then
+        # print informations
+        echo "git repo overview"
+        echo "-----------------"
+        echo
+
+        # print all remotes and thier details
+        for remote in $(git remote show); do
+            echo $remote:
+            git remote show $remote
+            echo
+        done
+
+        # print status of working repo
+        echo "status:"
+        if [ -n "$(git status -s 2> /dev/null)" ]; then
+            git status -s
+        else
+            echo "working directory is clean"
+        fi
+
+        # print at least 5 last log entries
+        echo
+        echo "log:"
+        git log -5 --oneline
+        echo
+
+    else
+        echo "you're currently not in a git repository"
+
+    fi
+}
