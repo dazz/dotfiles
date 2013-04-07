@@ -1,0 +1,207 @@
+alias resource='source ~/.bash_aliases'
+alias aliases='vim ~/.bash_aliases && source ~/.bash_aliases'
+
+
+# aaaaall my shortcuts
+alias ls='ls --color=auto'
+alias ll='ls -l'
+alias la='ls -AF'
+alias lh='ls -lah'
+alias l='ls -CF'
+alias lr='ls -r'
+alias lt='ls -t'
+alias lrt='ls -rt'
+alias cd..='cd ..'
+alias cd...='cd ../..'
+alias cd....='cd ../../..'
+alias cd.....='cd ../../../..'
+alias ..='cd ..;'
+alias ...='cd ../..;'
+alias ....='cd ../../..;'
+alias .....='cd ../../../..;'
+alias back='cd $OLDPWD'
+alias man="man -a"
+alias ping='ping -c 10 -a'
+alias install='sudo apt-get install'
+alias search='echo "apt-cache search" && apt-cache search'
+alias update='sudo apt-get update'
+alias df='df -h'
+alias grep='grep --color=auto'
+
+# in this manner, a nice command:  h <searchterm>
+alias h='history | grep $1'
+
+# dev stuff
+alias ide='./bin/phpstorm'
+alias go='cd ~/code/'
+alias symfony='php app/console'
+alias sf='symfony'
+
+
+## git Aliases
+alias gcl='git clone'
+alias ga='git add'
+alias gall='git add .'
+alias g='git'
+alias gs='git status'
+alias gss='git status -s'
+alias gl='git log --oneline'
+#alias gup='git fetch && git rebase'
+#alias gp='git push'
+#alias gpo='git push origin '
+alias gb='git branch'
+alias gcount='git shortlog -sn'
+#alias gdel='git branch -D'
+alias gcm='git commit -a -m'
+alias gst="git stash"
+alias gll='git log --graph --pretty=oneline --abbrev-commit'
+alias cdiff='git diff --cached'
+alias gsdiff='git diff --staged'
+alias gcm='git cherry master'
+#alias gitrm="git stat | grep deleted | awk '{print $3}' | xargs git rm"
+alias gg='gitg'
+
+function git_info() {
+
+    if [ -n "$(git symbolic-ref HEAD 2> /dev/null)" ]; then
+        # print informations
+        echo "git repo overview"
+        echo "-----------------"
+        echo
+
+        # print all remotes and thier details
+        for remote in $(git remote show); do
+            echo $remote:
+            git remote show $remote
+            echo
+        done
+
+        # print status of working repo
+        echo "status:"
+        if [ -n "$(git status -s 2> /dev/null)" ]; then
+            git status -s
+        else
+            echo "working directory is clean"
+        fi
+
+        # print at least 5 last log entries
+        echo 
+        echo "log:"
+        git log -5 --oneline
+        echo 
+
+    else
+        echo "you're currently not in a git repository"
+
+    fi
+}
+
+
+GIT_THEME_PROMPT_DIRTY='*'
+
+function git_prompt_info() {
+  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
+  echo -e " (${ref#refs/heads/}$(parse_git_dirty))"
+}
+
+function parse_git_dirty {
+  if [[ -n $(git status -s 2> /dev/null |grep -v ^# | grep -v "working directory clean" ) ]]; then
+      echo -e "$GIT_THEME_PROMPT_DIRTY"
+  else
+    echo -e "$GIT_THEME_PROMPT_CLEAN"
+  fi
+}
+
+function fix_home()  {
+ cd ~
+ sudo umount -fl .gvfs
+ sudo rmdir -v .gvfs
+}
+
+fix_networking() {
+ sudo killall nm-applet
+ nm-applet&
+}
+
+# do not save empty lines in the history
+export HISTCONTROL=ignorespace
+
+# I want a lot..
+export HISTFILESIZE=5000
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+ xterm*|rxvt*)
+  PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
+  ;;
+ *)
+  ;;
+esac
+
+
+#-----------------------------------------------------------------------------
+# Prompts
+#-----------------------------------------------------------------------------
+set_prompts() {
+    # regular colors
+    local DEFAULT="\[\033[0m\]"   # standard terminal fg color
+    local BLACK="\[\033[0;30m\]"
+    local RED="\[\033[0;31m\]"
+    local GREEN="\[\033[0;32m\]"
+    local YELLOW="\[\033[0;33m\]"
+    local BLUE="\[\033[0;34m\]"
+    local MAGENTA="\[\033[0;35m\]"
+    local CYAN="\[\033[0;36m\]"
+    local WHITE="\[\033[0;37m\]"
+
+    # emphasized/bold colors
+    local EM_BLACK="\[\033[1;30m\]"
+    local EM_RED="\[\033[1;31m\]"
+    local EM_GREEN="\[\033[1;32m\]"
+    local EM_YELLOW="\[\033[1;33m\]"
+    local EM_BLUE="\[\033[1;34m\]"
+    local EM_MAGENTA="\[\033[1;35m\]"
+    local EM_CYAN="\[\033[1;36m\]"
+    local EM_WHITE="\[\033[1;37m\]"
+
+    # background colors
+    local BG_BLACK="\[\033[40m\]"
+    local BG_RED="\[\033[41m\]"
+    local BG_GREEN="\[\033[42m\]"
+    local BG_YELLOW="\[\033[43m\]"
+    local BG_BLUE="\[\033[44m\]"
+    local BG_MAGENTA="\[\033[45m\]"
+    local BG_CYAN="\[\033[46m\]"
+    local BG_WHITE="\[\033[47m\]"
+
+    # Default prompts
+   #PS1="${EM_BLACK}"'$?'"${EM_BLACK}(${EM_BLUE}\u${EM_BLACK}@${EM_CYAN}\h ${EM_WHITE}\w${EM_BLACK})${EM_BLUE}\$${DEFAULT} "
+    PS1="${EM_BLACK}[\$(date +%H:%M)] ${EM_BLUE}\u${EM_BLACK}@${EM_CYAN}\h${EM_BLACK}: ${EM_WHITE}\w${EM_CYAN}\[\$(git_prompt_info)\]${EM_BLUE}\$${DEFAULT} "
+    PS2="${EM_BLUE}>${DEFAULT} "
+    PS3=$PS2
+    PS4="${EM_BLUE}+${DEFAULT} "
+
+    # Special red-colored prompts for root
+    if [ "$UID" = 0 ]; then
+        PS1="${EM_BLACK}"'$?'"${EM_BLACK}(${EM_RED}\u${EM_BLACK}@${EM_CYAN}\h ${EM_RED}\w${EM_BLACK})${EM_RED}\$${DEFAULT} "
+        PS2="${EM_RED}>${DEFAULT} "
+        PS3=$PS2
+        PS4="${EM_RED}+${DEFAULT} "
+    fi
+
+    # Special prompt for Debian: Include variable identifying the chroot you work in in the prompt
+    # (copied from default Debian .bashrc file, never actually tested)
+    if [ -z "$debian_chroot" ] && [ -r "/etc/debian_chroot" ]; then
+        export debian_chroot=`cat /etc/debian_chroot`
+        PS1="${debian_chroot:+($debian_chroot)}${PS1}"
+    fi
+
+    export PS1 PS2 PS3 PS4
+}
+set_prompts
+unset -f set_prompts
+
+#PS1="\[\033[01;32m\]\u@\h:\w\[\$(git_prompt_info)\]\[\033[00m\]\$ "
+# this is the old good one:
+#PS1="[\$(date +%H:%M)] \[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[01;32m\]\[\$(git_prompt_info)\]\[\033[00m\]$ "
+
