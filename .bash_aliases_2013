@@ -1,8 +1,14 @@
-# source this file after save :)
+#-----------------------------------------------------------------------------
+# Source this file after save :)
+#-----------------------------------------------------------------------------
+
 alias resource='source ~/.bash_aliases'
 alias aliases='vim ~/.bash_aliases && source ~/.bash_aliases'
 
-# aaaaall my shortcuts
+#-----------------------------------------------------------------------------
+# Aaaaall my shortcuts
+#-----------------------------------------------------------------------------
+
 alias grep='grep --color=auto'
 alias ls='ls --color=auto'
 alias ll='ls -l'
@@ -24,22 +30,29 @@ alias df='df -h'
 alias man="man -a"
 
 alias back='cd $OLDPWD'
+alias openports="netstat -nape --inet"
+alias myip="curl www.whatismyip.org"
 alias ping='ping -c 10 -a'
 alias install='sudo apt-get install'
 alias search='echo "apt-cache search" && apt-cache search'
 alias update='sudo apt-get update'
 
-# in this manner, a nice command:  h <searchterm>
-alias h='history | grep $1'
+alias h='history | grep $1' # in this manner, a nice command:  h <searchterm>
 
-# dev stuff
+#-----------------------------------------------------------------------------
+# Dev aliases
+#-----------------------------------------------------------------------------
+
 alias ide='./bin/phpstorm'
 alias go='cd ~/code/'
 alias symfony='php app/console'
 alias sf='symfony'
+alias gg='gitg'
 
+#-----------------------------------------------------------------------------
+# Git aliases
+#-----------------------------------------------------------------------------
 
-## git Aliases
 alias gcl='git clone'
 alias ga='git add'
 alias gall='git add .'
@@ -60,7 +73,10 @@ alias cdiff='git diff --cached'
 alias gsdiff='git diff --staged'
 alias gcm='git cherry master'
 #alias gitrm="git stat | grep deleted | awk '{print $3}' | xargs git rm"
-alias gg='gitg'
+
+#-----------------------------------------------------------------------------
+# Famous git_info function
+#-----------------------------------------------------------------------------
 
 function git_info() {
 
@@ -97,13 +113,16 @@ function git_info() {
     fi
 }
 
-
-GIT_THEME_PROMPT_DIRTY='*'
+#-----------------------------------------------------------------------------
+# this function is called in PS1
+#-----------------------------------------------------------------------------
 
 function git_prompt_info() {
   ref=$(git symbolic-ref HEAD 2> /dev/null) || return
   echo -e " (${ref#refs/heads/}$(parse_git_dirty))"
 }
+
+GIT_THEME_PROMPT_DIRTY='*'
 
 function parse_git_dirty {
   if [[ -n $(git status -s 2> /dev/null |grep -v ^# | grep -v "working directory clean" ) ]]; then
@@ -112,6 +131,10 @@ function parse_git_dirty {
     echo -e "$GIT_THEME_PROMPT_CLEAN"
   fi
 }
+
+#-----------------------------------------------------------------------------
+# my fix functions - stuff breaks - this will fix
+#-----------------------------------------------------------------------------
 
 function fix_home()  {
  cd ~
@@ -124,11 +147,29 @@ function fix_networking() {
  nm-applet&
 }
 
-# do not save empty lines in the history
-export HISTCONTROL=ignorespace
+# Simple reminder (must leave shell open!)
+# Usage:   remindme <time> <text>
+# Example: remindme 10m "omg, the pizza"
+function remindme() {
+ sleep "$1" && alert --urgency=normal --app-name="I said:" "$2"&
+}
 
-# I want a lot..
+#-----------------------------------------------------------------------------
+# History
+#-----------------------------------------------------------------------------
+
+export HISTSIZE=5000
 export HISTFILESIZE=5000
+export HISTFILE="$HOME/.bash_history"
+if [ "$UID" != 0 ]; then
+    export HISTCONTROL="ignoreboth"   # ignores duplicate lines next to each other and lines with a leading space
+    export HISTIGNORE="[bf]g:exit:logout"
+fi
+
+
+#-----------------------------------------------------------------------------
+# Terminal
+#-----------------------------------------------------------------------------
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -139,10 +180,10 @@ case "$TERM" in
   ;;
 esac
 
-
 #-----------------------------------------------------------------------------
 # Prompts
 #-----------------------------------------------------------------------------
+
 set_prompts() {
     # regular colors
     local DEFAULT="\[\033[0m\]"   # standard terminal fg color
