@@ -17,6 +17,7 @@ php7.2 \
 python-pip \
 thunderbird \
 tig \
+tree \
 vlc \
 yarn \
 youtube-dl \
