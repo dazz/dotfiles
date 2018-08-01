@@ -3,7 +3,7 @@
 install \
 byobu \
 docker \
-docker-compopse \
+docker-compose \
 gimp \
 git \
 gitg \
