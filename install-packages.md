@@ -11,6 +11,7 @@ gparted \
 htop \
 keepassx \
 konsole \
+myrepos \
 mysql-workbench \
 nmap \
 php7.2 \
